@@ -381,7 +381,8 @@ def clean_json_response(raw: str) -> dict:
 
 
 def call_gemini(prompt: str) -> dict:
-    response = gemini_client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
+    # response = gemini_client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
+    response = gemini_client.generate_content(prompt)
     return clean_json_response(response.text)
 
 
