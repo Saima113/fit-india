@@ -5,13 +5,13 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 const steps : { id: string; question: string; subtext?: string; type: string; options?: string[]; descriptions?: string[]; field?: string; }[]= [
-  {
-    id: "name",
-    question: "What should we call you?",
-    subtext: "This is how FitIndia will address you",
-    type: "text_input",
-    field: "display_name",
-  },
+  // {
+  //   id: "name",
+  //   question: "What should we call you?",
+  //   subtext: "This is how FitIndia will address you",
+  //   type: "text_input",
+  //   field: "display_name",
+  // },
   {
     id: "goal",
     question: "What is your main fitness goal?",
