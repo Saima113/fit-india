@@ -9,13 +9,15 @@ import os
 import json
 import logging
 
-from google import genai
+# from google import genai
+import google.generativeai as genai
 from groq import Groq
 
 load_dotenv()
 
-gemini_client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 GEMINI_MODEL = "gemini-2.0-flash"
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+gemini_client = genai.GenerativeModel(GEMINI_MODEL)
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
@@ -382,6 +384,7 @@ def clean_json_response(raw: str) -> dict:
 
 def call_gemini(prompt: str) -> dict:
     # response = gemini_client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
+    
     response = gemini_client.generate_content(prompt)
     return clean_json_response(response.text)
 
