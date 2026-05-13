@@ -450,11 +450,11 @@ def save_profile(profile: UserProfile):
 
         # Save user profile
         cur.execute("""
-            INSERT INTO user_profiles (
-                clerk_user_id, goal, age, height_cm, weight_kg,
-                activity_level, diet_type, medical_conditions,
-                lifestyle_mode, fasting_types, workout_location
-            ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+             INSERT INTO user_profiles (
+        clerk_user_id, display_name, goal, age, height_cm, weight_kg,
+        activity_level, diet_type, medical_conditions,
+        lifestyle_mode, fasting_types, workout_location
+    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
             ON CONFLICT (clerk_user_id) DO UPDATE SET
                 display_name=EXCLUDED.display_name,
                 goal=EXCLUDED.goal, age=EXCLUDED.age, height_cm=EXCLUDED.height_cm,
@@ -462,10 +462,10 @@ def save_profile(profile: UserProfile):
                 diet_type=EXCLUDED.diet_type, medical_conditions=EXCLUDED.medical_conditions,
                 lifestyle_mode=EXCLUDED.lifestyle_mode, fasting_types=EXCLUDED.fasting_types,
                 workout_location=EXCLUDED.workout_location, updated_at=CURRENT_TIMESTAMP
-        """, (profile.clerk_user_id, profile.display_name, profile.goal, profile.age, profile.height_cm,
-              profile.weight_kg, profile.activity_level, profile.diet_type,
-              profile.medical_conditions, profile.lifestyle_mode,
-              profile.fasting_types, profile.workout_location))
+        """, (profile.clerk_user_id, profile.display_name, profile.goal, profile.age,
+      profile.height_cm, profile.weight_kg, profile.activity_level, profile.diet_type,
+      profile.medical_conditions, profile.lifestyle_mode,
+      profile.fasting_types, profile.workout_location))
 
         # Seed fasting_settings from onboarding choices — only if no row exists yet
         # ON CONFLICT DO NOTHING preserves any toggles the user has already set manually
