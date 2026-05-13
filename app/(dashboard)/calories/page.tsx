@@ -83,7 +83,7 @@ export default function CaloriesPage() {
 
   const fetchToday = async () => {
     if (!user) return;
-    const res = await fetch(`process.env.NEXT_PUBLIC_API_URL/calories/${user.id}/today`);
+    const res = await fetch(`http://localhost:8000/calories/${user.id}/today`);
     const data = await res.json();
     setEntries(data.entries || []);
     setTotalCal(data.total_calories || 0);
@@ -97,7 +97,7 @@ export default function CaloriesPage() {
   const handleAdd = async () => {
     if (!user || !foodName || !calories) return;
     setAdding(true);
-    await fetch("process.env.NEXT_PUBLIC_API_URL/calories/log", {
+    await fetch("http://localhost:8000/calories/log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -117,7 +117,7 @@ export default function CaloriesPage() {
 
   const handleQuickAdd = async (food: (typeof COMMON_FOODS)[0]) => {
     if (!user) return;
-    await fetch("process.env.NEXT_PUBLIC_API_URL/calories/log", {
+    await fetch("http://localhost:8000/calories/log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

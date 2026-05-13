@@ -73,7 +73,7 @@ export default function DashboardPage() {
     setError("");
     try {
       const profileRes = await fetch(
-        `process.env.NEXT_PUBLIC_API_URL/profile/${user.id}`,
+        `http://localhost:8000/profile/${user.id}`,
       );
       const profileData = await profileRes.json();
 
@@ -82,7 +82,7 @@ export default function DashboardPage() {
         return;
       }
 
-      const workoutRes = await fetch("process.env.NEXT_PUBLIC_API_URL/generate-workout", {
+      const workoutRes = await fetch("http://localhost:8000/generate-workout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
