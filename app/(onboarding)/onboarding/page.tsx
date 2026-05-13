@@ -138,7 +138,7 @@ export default function OnboardingPage() {
     if (!user) return;
     setLoading(true);
     try {
-      await fetch("$\{process.env.NEXT_PUBLIC_API_URL\}/profile", {
+      await fetch("https://fit-india-f4a8.onrender.com/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

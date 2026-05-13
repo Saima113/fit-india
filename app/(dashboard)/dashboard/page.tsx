@@ -73,7 +73,7 @@ export default function DashboardPage() {
     setError("");
     try {
       const profileRes = await fetch(
-        `$\{process.env.NEXT_PUBLIC_API_URL\}/profile/${user.id}`,
+        `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
       );
       const profileData = await profileRes.json();
 
@@ -82,7 +82,7 @@ export default function DashboardPage() {
         return;
       }
 
-      const workoutRes = await fetch("$\{process.env.NEXT_PUBLIC_API_URL\}/generate-workout", {
+      const workoutRes = await fetch("https://fit-india-f4a8.onrender.com/generate-workout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

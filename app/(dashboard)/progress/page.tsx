@@ -45,7 +45,7 @@ export default function ProgressPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`$\{process.env.NEXT_PUBLIC_API_URL\}/progress/${user.id}`)
+    fetch(`https://fit-india-f4a8.onrender.com/progress/${user.id}`)
       .then((r) => r.json())
       .then((data) => {
         setProgress(data);

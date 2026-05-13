@@ -104,7 +104,7 @@ export default function FastingPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`$\{process.env.NEXT_PUBLIC_API_URL\}/fasting/${user.id}`)
+    fetch(`https://fit-india-f4a8.onrender.com/fasting/${user.id}`)
       .then((r) => {
         if (!r.ok) throw new Error("fetch failed");
         return r.json();
@@ -126,7 +126,7 @@ export default function FastingPage() {
     if (!user) return;
     setSaving(true);
     try {
-      await fetch(`$\{process.env.NEXT_PUBLIC_API_URL\}/fasting/${user.id}`, {
+      await fetch(`https://fit-india-f4a8.onrender.com/fasting/${user.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
