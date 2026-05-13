@@ -75,30 +75,38 @@ export default function DashboardPage() {
         `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
       );
       const profileData = await profileRes.json();
+      console.log("Profile data:", profileData);
 
-      if (!profileData.exists) {
-        // Retry once after 1.5s to handle race condition
-        await new Promise((r) => setTimeout(r, 1500));
-        const retryRes = await fetch(
-          `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
-        );
-        const retryData = await retryRes.json();
-        if (!retryData.exists) {
-          window.location.href = "/onboarding";
-          return;
-        }
-        // Profile now exists, continue with retryData
-        const workoutRes = await fetch(
-          "https://fit-india-f4a8.onrender.com/generate-workout",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ clerk_user_id: user.id, ...retryData }),
-          },
-        );
-        const workoutData = await workoutRes.json();
-        setWorkout(workoutData.workout);
-        setLoading(false);
+      // if (!profileData.exists) {
+      //   // Retry once after 1.5s to handle race condition
+      //   await new Promise((r) => setTimeout(r, 3000));
+      //   const retryRes = await fetch(
+      //     `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
+      //   );
+      //   const retryData = await retryRes.json();
+      //   if (!retryData.exists) {
+      //     window.location.href = "/onboarding";
+      //     return;
+      //   }
+      //   // Profile now exists, continue with retryData
+      //   const workoutRes = await fetch(
+      //     "https://fit-india-f4a8.onrender.com/generate-workout",
+      //     {
+      //       method: "POST",
+      //       headers: { "Content-Type": "application/json" },
+      //       body: JSON.stringify({ clerk_user_id: user.id, ...retryData }),
+      //     },
+      //   );
+      //   const workoutData = await workoutRes.json();
+      //   setWorkout(workoutData.workout);
+      //   setLoading(false);
+      //   return;
+      // }
+      const isNewUser =
+        new URLSearchParams(window.location.search).get("onboarded") === "true";
+
+      if (!profileData.exists && !isNewUser) {
+        window.location.href = "/onboarding";
         return;
       }
 
