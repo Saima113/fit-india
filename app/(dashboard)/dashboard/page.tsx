@@ -38,14 +38,13 @@ interface WorkoutPlan {
   trainer_note: string;
 }
 
-
 const SIDEBAR_ITEMS = [
-  { icon: Dumbbell,    label: "Workout",  href: "/dashboard" },
-  { icon: Utensils,   label: "Meals",    href: "/meals" },
+  { icon: Dumbbell, label: "Workout", href: "/dashboard" },
+  { icon: Utensils, label: "Meals", href: "/meals" },
   { icon: Calculator, label: "Calories", href: "/calories" },
-  { icon: Moon,       label: "Fasting",  href: "/fasting" },
+  { icon: Moon, label: "Fasting", href: "/fasting" },
   { icon: TrendingUp, label: "Progress", href: "/progress" },
-  { icon: User, label: "Profile", href: "/profile" }
+  { icon: User, label: "Profile", href: "/profile" },
 ];
 
 export default function DashboardPage() {
@@ -78,18 +77,42 @@ export default function DashboardPage() {
       const profileData = await profileRes.json();
 
       if (!profileData.exists) {
-        window.location.href = "/onboarding";
+        // Retry once after 1.5s to handle race condition
+        await new Promise((r) => setTimeout(r, 1500));
+        const retryRes = await fetch(
+          `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
+        );
+        const retryData = await retryRes.json();
+        if (!retryData.exists) {
+          window.location.href = "/onboarding";
+          return;
+        }
+        // Profile now exists, continue with retryData
+        const workoutRes = await fetch(
+          "https://fit-india-f4a8.onrender.com/generate-workout",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ clerk_user_id: user.id, ...retryData }),
+          },
+        );
+        const workoutData = await workoutRes.json();
+        setWorkout(workoutData.workout);
+        setLoading(false);
         return;
       }
 
-      const workoutRes = await fetch("https://fit-india-f4a8.onrender.com/generate-workout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clerk_user_id: user.id,
-          ...profileData,
-        }),
-      });
+      const workoutRes = await fetch(
+        "https://fit-india-f4a8.onrender.com/generate-workout",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            clerk_user_id: user.id,
+            ...profileData,
+          }),
+        },
+      );
       const workoutData = await workoutRes.json();
       setWorkout(workoutData.workout);
     } catch (err) {
@@ -484,7 +507,6 @@ export default function DashboardPage() {
                   ? "✓ Workout Logged! Great work today 🔥"
                   : "Mark Workout as Done"}
               </button>
-              
 
               {/* Regenerate */}
               <button
@@ -512,7 +534,6 @@ export default function DashboardPage() {
     </div>
   );
 }
-
 
 function WorkoutSection({
   title,
