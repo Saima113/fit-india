@@ -138,7 +138,7 @@ export default function OnboardingPage() {
     if (!user) return;
     setLoading(true);
     try {
-      await fetch("http://localhost:8000/profile", {
+      await fetch("process.env.NEXT_PUBLIC_API_URL/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

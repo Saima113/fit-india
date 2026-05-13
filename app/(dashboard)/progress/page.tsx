@@ -45,7 +45,7 @@ export default function ProgressPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:8000/progress/${user.id}`)
+    fetch(`process.env.NEXT_PUBLIC_API_URL/progress/${user.id}`)
       .then((r) => r.json())
       .then((data) => {
         setProgress(data);

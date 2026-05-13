@@ -104,7 +104,7 @@ export default function FastingPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:8000/fasting/${user.id}`)
+    fetch(`process.env.NEXT_PUBLIC_API_URL/fasting/${user.id}`)
       .then((r) => {
         if (!r.ok) throw new Error("fetch failed");
         return r.json();
@@ -126,7 +126,7 @@ export default function FastingPage() {
     if (!user) return;
     setSaving(true);
     try {
-      await fetch(`http://localhost:8000/fasting/${user.id}`, {
+      await fetch(`process.env.NEXT_PUBLIC_API_URL/fasting/${user.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
