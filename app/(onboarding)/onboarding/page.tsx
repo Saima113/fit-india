@@ -156,7 +156,7 @@ export default function OnboardingPage() {
           workout_location: answers.workout_location,
         }),
       });
-      router.push("/dashboard");
+     router.push("/dashboard?onboarded=true");
     } catch (err) {
       console.error(err);
     } finally {

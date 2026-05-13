@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useUser } from "@clerk/nextjs";
 import {
   Dumbbell,
@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 import { logWorkoutCompleted } from "@/lib/logworkoutcompleted";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Mascot from "@/components/mascot";
 
 interface Exercise {
@@ -47,10 +47,13 @@ const SIDEBAR_ITEMS = [
   { icon: User, label: "Profile", href: "/profile" },
 ];
 
-export default function DashboardPage() {
+function DashboardInner() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isNewUser = searchParams.get("onboarded") === "true";
+
   const [workout, setWorkout] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -66,72 +69,57 @@ export default function DashboardPage() {
     if (result) setWorkoutLogged(true);
   };
 
-  const fetchWorkout = async () => {
-    if (!user) return;
-    setLoading(true);
-    setError("");
-    try {
-      const profileRes = await fetch(
-        `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
-      );
-      const profileData = await profileRes.json();
-      console.log("Profile data:", profileData);
+  const fetchWorkout = async (newUser: boolean = false) => {
+  if (!user) return;
+  setLoading(true);
+  setError("");
+  try {
+    let profileData;
 
-      // if (!profileData.exists) {
-      //   // Retry once after 1.5s to handle race condition
-      //   await new Promise((r) => setTimeout(r, 3000));
-      //   const retryRes = await fetch(
-      //     `https://fit-india-f4a8.onrender.com/profile/${user.id}`,
-      //   );
-      //   const retryData = await retryRes.json();
-      //   if (!retryData.exists) {
-      //     window.location.href = "/onboarding";
-      //     return;
-      //   }
-      //   // Profile now exists, continue with retryData
-      //   const workoutRes = await fetch(
-      //     "https://fit-india-f4a8.onrender.com/generate-workout",
-      //     {
-      //       method: "POST",
-      //       headers: { "Content-Type": "application/json" },
-      //       body: JSON.stringify({ clerk_user_id: user.id, ...retryData }),
-      //     },
-      //   );
-      //   const workoutData = await workoutRes.json();
-      //   setWorkout(workoutData.workout);
-      //   setLoading(false);
-      //   return;
-      // }
-      const isNewUser =
-        new URLSearchParams(window.location.search).get("onboarded") === "true";
-
-      if (!profileData.exists && !isNewUser) {
-        window.location.href = "/onboarding";
-        return;
+    if (newUser) {
+      // Render cold start — retry up to 5 times with 2s delay
+      for (let i = 0; i < 5; i++) {
+        const res = await fetch(
+          `https://fit-india-f4a8.onrender.com/profile/${user.id}`
+        );
+        profileData = await res.json();
+        if (profileData.exists) break;
+        await new Promise((r) => setTimeout(r, 2000)); // wait 2s before retry
       }
-
-      const workoutRes = await fetch(
-        "https://fit-india-f4a8.onrender.com/generate-workout",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            clerk_user_id: user.id,
-            ...profileData,
-          }),
-        },
+    } else {
+      const res = await fetch(
+        `https://fit-india-f4a8.onrender.com/profile/${user.id}`
       );
-      const workoutData = await workoutRes.json();
-      setWorkout(workoutData.workout);
-    } catch (err) {
-      setError("Failed to load workout. Make sure the backend is running.");
-    } finally {
-      setLoading(false);
+      profileData = await res.json();
     }
-  };
+
+    if (!profileData.exists && !newUser) {
+      window.location.href = "/onboarding";
+      return;
+    }
+
+    const workoutRes = await fetch(
+      "https://fit-india-f4a8.onrender.com/generate-workout",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clerk_user_id: user.id,
+          ...profileData,
+        }),
+      }
+    );
+    const workoutData = await workoutRes.json();
+    setWorkout(workoutData.workout);
+  } catch (err) {
+    setError("Failed to load workout. Make sure the backend is running.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    if (user) fetchWorkout();
+    if (user) fetchWorkout(isNewUser);
   }, [user]);
 
   const firstName =
@@ -518,7 +506,7 @@ export default function DashboardPage() {
 
               {/* Regenerate */}
               <button
-                onClick={fetchWorkout}
+                onClick={() => fetchWorkout(false)}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -675,5 +663,13 @@ function WorkoutSection({
         ))}
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={null}>
+      <DashboardInner />
+    </Suspense>
   );
 }
