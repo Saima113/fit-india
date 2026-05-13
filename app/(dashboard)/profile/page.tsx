@@ -1,3 +1,4 @@
+import API_URL from "@/lib/api";
 "use client";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -80,7 +81,7 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     if (!user) return;
-    const res = await fetch(`process.env.NEXT_PUBLIC_API_URL/profile-full/${user.id}`);
+    const res = await fetch(`API_URL/profile-full/${user.id}`);
     const data = await res.json();
     setProfile(data);
     setEditWeight(String(data.weight_kg || ""));
@@ -94,7 +95,7 @@ export default function ProfilePage() {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
-    await fetch(`process.env.NEXT_PUBLIC_API_URL/profile/${user.id}`, {
+    await fetch(`API_URL/profile/${user.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

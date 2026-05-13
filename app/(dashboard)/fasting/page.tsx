@@ -1,3 +1,4 @@
+import API_URL from "@/lib/api";
 "use client";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -104,7 +105,7 @@ export default function FastingPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`process.env.NEXT_PUBLIC_API_URL/fasting/${user.id}`)
+    fetch(`API_URL/fasting/${user.id}`)
       .then((r) => {
         if (!r.ok) throw new Error("fetch failed");
         return r.json();
@@ -126,7 +127,7 @@ export default function FastingPage() {
     if (!user) return;
     setSaving(true);
     try {
-      await fetch(`process.env.NEXT_PUBLIC_API_URL/fasting/${user.id}`, {
+      await fetch(`API_URL/fasting/${user.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
