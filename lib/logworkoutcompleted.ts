@@ -8,7 +8,7 @@ export async function logWorkoutCompleted(
   durationMinutes?: number
 ) {
   try {
-    const res = await fetch("http://localhost:8000/progress/log-workout", {
+    const res = await fetch("https://fit-india-f4a8.onrender.com/progress/log-workout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
