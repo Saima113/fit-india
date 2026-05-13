@@ -1,4 +1,3 @@
-import API_URL from "@/lib/api";
 "use client";
 
 import { useState } from "react";
@@ -139,7 +138,7 @@ export default function OnboardingPage() {
     if (!user) return;
     setLoading(true);
     try {
-      await fetch("API_URL/profile", {
+      await fetch("process.env.NEXT_PUBLIC_API_URL/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

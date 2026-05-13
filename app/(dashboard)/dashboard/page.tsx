@@ -1,4 +1,3 @@
-import API_URL from "@/lib/api";
 "use client";
 
 import { useEffect, useState } from "react";
@@ -74,7 +73,7 @@ export default function DashboardPage() {
     setError("");
     try {
       const profileRes = await fetch(
-        `API_URL/profile/${user.id}`,
+        `process.env.NEXT_PUBLIC_API_URL/profile/${user.id}`,
       );
       const profileData = await profileRes.json();
 
@@ -83,7 +82,7 @@ export default function DashboardPage() {
         return;
       }
 
-      const workoutRes = await fetch("API_URL/generate-workout", {
+      const workoutRes = await fetch("process.env.NEXT_PUBLIC_API_URL/generate-workout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

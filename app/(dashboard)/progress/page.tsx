@@ -1,4 +1,3 @@
-import API_URL from "@/lib/api";
 "use client";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -46,7 +45,7 @@ export default function ProgressPage() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`API_URL/progress/${user.id}`)
+    fetch(`process.env.NEXT_PUBLIC_API_URL/progress/${user.id}`)
       .then((r) => r.json())
       .then((data) => {
         setProgress(data);

@@ -1,4 +1,3 @@
-import API_URL from "@/lib/api";
 "use client";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -78,10 +77,10 @@ export default function MealsPage() {
     setLoading(true);
     setError("");
     try {
-      const profileRes = await fetch(`API_URL/profile/${user.id}`);
+      const profileRes = await fetch(`process.env.NEXT_PUBLIC_API_URL/profile/${user.id}`);
       const profileData = await profileRes.json();
       if (!profileData.exists) { router.push("/onboarding"); return; }
-      const res = await fetch("API_URL/generate-meals", {
+      const res = await fetch("process.env.NEXT_PUBLIC_API_URL/generate-meals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clerk_user_id: user.id, ...profileData }),
