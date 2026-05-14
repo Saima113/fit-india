@@ -80,7 +80,7 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     if (!user) return;
-    const res = await fetch(`https://fit-india-f4a8.onrender.com/profile-full/${user.id}`);
+    const res = await fetch(`http://localhost:8000/profile-full/${user.id}`);
     const data = await res.json();
     setProfile(data);
     setEditWeight(String(data.weight_kg || ""));
@@ -94,7 +94,7 @@ export default function ProfilePage() {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
-    await fetch(`https://fit-india-f4a8.onrender.com/profile/${user.id}`, {
+    await fetch(`http://localhost:8000/profile/${user.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -402,9 +402,9 @@ export default function ProfilePage() {
               )}
 
               {/* Quick links */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: "16px" }}>
                 {[
-                  { label: "View Progress Photos", href: "/photos" },
+                  
                   { label: "Track Calories Today", href: "/calories" },
                 ].map(({ label, href }) => (
                   <button key={label} onClick={() => router.push(href)} style={{

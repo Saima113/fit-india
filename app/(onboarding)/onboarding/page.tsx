@@ -97,12 +97,28 @@ const steps : { id: string; question: string; subtext?: string; type: string; op
 ];
 
 export default function OnboardingPage() {
-  const { user } = useUser();
+  // const { user } = useUser();
   const router = useRouter();
+   const { user, isLoaded } = useUser();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [stats, setStats] = useState({ age: "", height: "", weight: "" });
   const [loading, setLoading] = useState(false);
+  // ← add this block
+  if (!isLoaded) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "#0d0d0d",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "white"
+      }}>
+        Loading...
+      </div>
+    );
+  }
 
   const current = steps[step];
   const progress = ((step + 1) / steps.length) * 100;
@@ -135,10 +151,11 @@ export default function OnboardingPage() {
   };
 
   const handleSubmit = async () => {
+     console.log("USER IS:", user); 
     if (!user) return;
     setLoading(true);
     try {
-      await fetch("https://fit-india-f4a8.onrender.com/profile", {
+      await fetch("http://localhost:8000/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

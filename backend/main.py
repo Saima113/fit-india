@@ -43,6 +43,7 @@ app.add_middleware(
 class UserProfile(BaseModel):
     clerk_user_id: str
     goal: Optional[str] = None
+    display_name: Optional [str] = None  
     age: Optional[int] = None
     height_cm: Optional[int] = None
     weight_kg: Optional[float] = None
@@ -493,6 +494,7 @@ def save_profile(profile: UserProfile):
         conn.commit(); cur.close(); conn.close()
         return {"status": "success"}
     except Exception as e:
+        logging.error(f"save_profile error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -632,7 +634,7 @@ def generate_workout(profile: UserProfile):
         workout, model_used = call_with_fallback(build_workout_prompt(profile))
         return {"status": "success", "model_used": model_used, "workout": workout}
     except Exception as e:
-        logging.error(f"generate-workout error: {e}")
+        logging.error(f"generate-workout error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -643,7 +645,7 @@ def generate_diet(profile: UserProfile):
         diet, model_used = call_with_fallback(build_meal_prompt(profile))
         return {"status": "success", "model_used": model_used, "diet": diet}
     except Exception as e:
-        logging.error(f"generate-diet error: {e}")
+        logging.error(f"generate-diet error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -654,7 +656,7 @@ def generate_meals(profile: UserProfile):
         meal_plan, model_used = call_with_fallback(build_meal_prompt(profile))
         return {"status": "success", "model_used": model_used, "meal_plan": meal_plan}
     except Exception as e:
-        logging.error(f"generate-meals error: {e}")
+        logging.error(f"generate-meals error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 

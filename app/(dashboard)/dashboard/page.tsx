@@ -80,7 +80,7 @@ function DashboardInner() {
       // Render cold start — retry up to 5 times with 2s delay
       for (let i = 0; i < 5; i++) {
         const res = await fetch(
-          `https://fit-india-f4a8.onrender.com/profile/${user.id}`
+          `http://localhost:8000/profile/${user.id}`
         );
         profileData = await res.json();
         if (profileData.exists) break;
@@ -88,7 +88,7 @@ function DashboardInner() {
       }
     } else {
       const res = await fetch(
-        `https://fit-india-f4a8.onrender.com/profile/${user.id}`
+        `http://localhost:8000/profile/${user.id}`
       );
       profileData = await res.json();
     }
@@ -99,7 +99,7 @@ function DashboardInner() {
     }
 
     const workoutRes = await fetch(
-      "https://fit-india-f4a8.onrender.com/generate-workout",
+      "http://localhost:8000/generate-workout",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

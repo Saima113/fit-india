@@ -77,10 +77,10 @@ export default function MealsPage() {
     setLoading(true);
     setError("");
     try {
-      const profileRes = await fetch(`https://fit-india-f4a8.onrender.com/profile/${user.id}`);
+      const profileRes = await fetch(`http://localhost:8000/profile/${user.id}`);
       const profileData = await profileRes.json();
       if (!profileData.exists) { router.push("/onboarding"); return; }
-      const res = await fetch("https://fit-india-f4a8.onrender.com/generate-meals", {
+      const res = await fetch("http://localhost:8000/generate-meals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ clerk_user_id: user.id, ...profileData }),
